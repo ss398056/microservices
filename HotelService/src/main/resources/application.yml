@@ -1,0 +1,28 @@
+server:
+  port: 8083
+
+spring:
+ datasource:
+  url: jdbc:postgresql://hoteldb.ctqomysyqm14.ap-south-1.rds.amazonaws.com/hotelDB
+  username: root
+  password: Sandeep1998
+  driver-class-name: org.postgresql.Driver
+ jpa:
+  hibernate:
+   ddl-auto: update
+  show-sql: true
+  database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+#Import ConfigServer Common Configuration
+ config:
+    import: configserver:http://localhost:8089
+
+#Eureka Discovery Client configuration
+#eureka:
+#  client:
+#    fetch-registry: true
+#    register-with-eureka: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka
+#    instance:
+#      prefer-ip-address: true

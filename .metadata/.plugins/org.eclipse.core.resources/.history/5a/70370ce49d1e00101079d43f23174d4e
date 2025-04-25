@@ -1,0 +1,5 @@
+package com.micro.hotel.service.controllers;
+
+public class StaffController {
+
+}

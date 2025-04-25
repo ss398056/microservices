@@ -1,0 +1,12 @@
+server:
+  port: 8089
+
+
+#Import configuration file from github
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/ss398056/microservice-config
+          clone-on-start: true

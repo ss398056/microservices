@@ -1,0 +1,33 @@
+server:
+  port: 8085
+
+#Configure All Microservices API's Using Single Port 
+spring:
+  cloud:
+    gateway:
+      mvc:
+        routes:
+        - id: USERSERVICE
+          uri: lb://USERSERVICE
+          predicates:
+            - Path=/users/**
+
+        - id: RATINGSERVICE
+          uri: lb://RATINGSERVICE
+          predicates:
+            - Path=/ratings/**
+
+        - id: HOTELSERVICE
+          uri: lb://HOTELSERVICE
+          predicates:
+            - Path=/hotels/**
+
+#Configure This Service For Eureka Server 
+eureka:
+ instance:
+    prefer-ip-address: true
+ client:
+   fetch-registry: true
+   register-with-eureka: true
+   service-url:
+      defaultZone: http://localhost:8761/eureka

@@ -1,0 +1,17 @@
+server:
+  port: 8085
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - 
+
+eureka:
+ instance:
+    prefer-ip-address: 
+ client:
+   fetch-registry: true
+   register-with-eureka: true
+   service-url:
+      defaultZone: http://localhost:8761/eureka
