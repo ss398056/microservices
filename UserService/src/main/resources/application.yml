@@ -43,7 +43,7 @@ management:
     health:
       show-details: always
 
-#Configure resilience4j Circuitbreaker
+#Configure resilience4j Circuitbreaker Service For API Calls
 resilience4j:
   circuitbreaker:
     instances:
@@ -55,3 +55,20 @@ resilience4j:
         automaticTransitionFromOpenToHalfOpenEnabled: true
         waitDurationInOpenState: 6s
         permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+
+  #Configure resilience4j Retry Service For API Calls
+  retry:
+    instances:
+      ratingHotelService:
+        max-attempts: 3
+        wait-duration: 5s
+   
+  #Configure resilience4j RateLimit Service For API Calls
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        timeoutDuration: 2s
+        limitRefreshPeriod: 4s
+        limit-for-period: 2

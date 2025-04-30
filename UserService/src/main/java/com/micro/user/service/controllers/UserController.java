@@ -16,17 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.micro.user.service.entities.User;
 import com.micro.user.service.services.UserService;
-import com.micro.user.service.services.imp.UserServiceImp;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
+	
 	@Autowired
 	private UserService userService;
-	
 	private Logger logger = LoggerFactory.getLogger(UserController.class);
+	
 	
 	@PostMapping
 	public ResponseEntity<User> createUser(@RequestBody User user){
@@ -35,19 +37,30 @@ public class UserController {
 		return new ResponseEntity<User>(createdUser, HttpStatus.CREATED);
 	}
 	
+	
+	//Implement CircuitBreaker for api call
+//	@CircuitBreaker(name="ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
+	//Implement retry for api calls
+	int retryCount = 1;
+//	@Retry(name="ratingHotelService", fallbackMethod = "ratingHotelFallback")
+	//Implement RateLimiter for api calls
+	@RateLimiter(name="userRateLimiter", fallbackMethod = "ratingHotelFallback")
 	@GetMapping("/{userId}")
-	@CircuitBreaker(name="ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
 	public ResponseEntity<User> getUserById(@PathVariable String userId){
+		logger.info("Retry Count: {}", retryCount);
+		retryCount++;
 		User user = userService.getUser(userId);
 		return new ResponseEntity<User>(user,HttpStatus.ACCEPTED);
 	}
 	
+	//Implement fallback method
 	public ResponseEntity<User> ratingHotelFallback(String userId, Exception ex){
-		logger.info("This service is down for a time please try after some time.", ex.getMessage());
+		logger.info("This service is down for a time please try again after some time.", ex.getMessage());
 		User user = new User();
 		user.setUserId(userId);
 		return new ResponseEntity<User>(user,HttpStatus.BAD_GATEWAY);
 	}
+	
 	
 	@GetMapping
 	public ResponseEntity<List<User>> getAllUsers(){
